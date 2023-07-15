@@ -1,0 +1,10 @@
+/node_modules/
+.env
+.env_staging
+/models/logs/
+.DS_Store
+/uploads/
+.env_live
+.env.development
+.env.production
+.env.staging
