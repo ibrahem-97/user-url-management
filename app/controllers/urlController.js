@@ -1,5 +1,4 @@
 const { default: axios } = require("axios");
-const { Cheerio } = require("cheerio");
 
 const URL = require("../models").URL;
 
