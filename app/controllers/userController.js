@@ -4,6 +4,7 @@ const User = require("../models").User;
 const URL = require("../models").URL;
 
 const getUser = async (req, res) => {
+  console.log("getUser")
   try {
     let { userId } = req.params;
     // check user is admin or not
@@ -135,4 +136,30 @@ const deleteUser = async (req, res) => {
   }
 };
 
-module.exports = { getUser, editUser, deleteUser };
+const getAllUsers = async (req, res) => {
+  console.log("getAllUsers")
+  try {
+    // check user is admin or not
+    if (req.user.type != "admin") {
+      return res.status(401).json({
+        error: true,
+        message: "unauthorized",
+      });
+    }
+    // get all users
+    const users = await User.findAll();
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Error in getAllUsers:", error);
+    res.status(500).json({
+      error: true,
+      message: "get_all_users_error",
+      details: error.message,
+    });
+  }
+};
+
+module.exports = { getUser, editUser, deleteUser, getAllUsers };
