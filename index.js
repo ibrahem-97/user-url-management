@@ -5,6 +5,7 @@ const { handleNotFound, handleErrors } = require("./app/utils/errorHandlers");
 const bodyParser = require("body-parser");
 const multer = require("multer");
 var fs = require("fs");
+const path = require("path");
 
 const app = express();
 // Configure multer for file upload
@@ -53,9 +54,11 @@ app.use("/auth", require("./app/routes/authRoutes"));
 app.use("/users", require("./app/routes/userRoutes"));
 app.use("/urls", require("./app/routes/urlRoutes"));
 
+app.use('/uploads',express.static(path.join(__dirname, dir)));
 // Error handler middleware
 app.use(handleNotFound);
 app.use(handleErrors);
+ 
 
 // Server setup
 
