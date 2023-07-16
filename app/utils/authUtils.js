@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const { jwtSecret } = require("../../config");
+const config = require("../../config/config");
 
 const authenticateToken = (req, res, next) => {
   const token = req.headers.authorization?.split(" ")[1];
@@ -11,7 +11,7 @@ const authenticateToken = (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, config.jwtSecret);
     req.user = decoded;
     next();
   } catch (error) {
@@ -32,7 +32,7 @@ const authenticateTokenAdmin = (req, res, next) => {
     });
   }
   try {
-    const decoded = jwt.verify(token, jwtSecret);
+    const decoded = jwt.verify(token, config.jwtSecret);
     if (decoded.type != "admin") {
       return res.status(401).json({
         error: true,
