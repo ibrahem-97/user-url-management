@@ -7,8 +7,15 @@ const config = require("../../config/config");
 const registerUser = async (req, res) => {
   try {
     const { username, email, password } = req.body;
-    const { profilePicture } = req.files; // Assuming you're using a middleware like `multer` for file uploads
 
+    if (req.files.length === 0 || !req.files) {
+      return res.status(500).json({
+        error: true,
+        message: "profile_picture_required",
+      });
+    }
+
+    const { path: profilePicturePath } = req.files[0]; // Assuming you're using a middleware like `multer` for file uploads
     // Check if the user already exists
     const existingUser = await User.findOne({ where: { email } });
     if (existingUser) {
@@ -21,34 +28,26 @@ const registerUser = async (req, res) => {
     // Hash the password
     const hashedPassword = await bcrypt.hash(password, 10);
     // Save the profile picture
-    const picturePath = `uploads/profiles/${profilePicture.name}`; // Assuming you're saving the picture in a directory called "uploads/profiles"
-    profilePicture.mv(picturePath, async (error) => {
-      if (error) {
-        console.error("Error in uploading profile picture:", error);
-        return res.status(500).json({
-          error: true,
-          message: "profile_picture_upload_error",
-          details: error.message,
-        });
-      }
-      // Create a new user
-      const newUser = await User.create({
-        username,
-        email,
-        password: hashedPassword,
-        profile_picture: picturePath,
-      });
+    const picturePath = profilePicturePath; // Assuming you're saving the picture in a directory called "uploads/profiles"
+    console.log(picturePath);
 
-      res.status(201).json({
-        success: true,
-        message: "user_registered_successfully",
-        data: {
-          id: newUser.id,
-          username: newUser.username,
-          email: newUser.email,
-          profile_picture: newUser.profile_picture,
-        },
-      });
+    // Create a new user
+    const newUser = await User.create({
+      username,
+      email,
+      password: hashedPassword,
+      profile_picture: picturePath,
+    });
+
+    res.status(201).json({
+      success: true,
+      message: "user_registered_successfully",
+      data: {
+        id: newUser.id,
+        username: newUser.username,
+        email: newUser.email,
+        profile_picture: newUser.profile_picture,
+      },
     });
   } catch (error) {
     console.error("Error in registerUser:", error);
