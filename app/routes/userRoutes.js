@@ -10,6 +10,7 @@ const {
 
 
 // user routes
+router.get("/all", authenticateTokenAdmin, userController.getAllUsers);
 router.get("/", authenticateToken, userController.getUser);
 router.put("/", authenticateToken, userController.editUser);
 router.delete("/", authenticateToken, userController.deleteUser);
