@@ -4,9 +4,17 @@ const express = require("express");
 const { handleNotFound, handleErrors } = require("./app/utils/errorHandlers");
 const bodyParser = require("body-parser");
 const multer = require("multer");
+var fs = require("fs");
 
 const app = express();
 // Configure multer for file upload
+
+var dir = "uploads";
+
+if (!fs.existsSync(dir)) {
+  fs.mkdirSync(dir, { recursive: true });
+}
+
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     cb(null, "uploads"); // Specify the directory to save the profile pictures
