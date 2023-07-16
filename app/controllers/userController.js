@@ -144,18 +144,23 @@ const deleteUser = async (req, res) => {
   }
 };
 
+/**
+ * function to get all users (admin only)
+ */
 const getAllUsers = async (req, res) => {
-  console.log("getAllUsers");
   try {
     // check user is admin or not
     if (req.user.type != "admin") {
-      return res.status(401).json({
+      return res.status(403).json({
         error: true,
-        message: "unauthorized",
+        message: "unauthorized_access",
       });
     }
-    // get all users
-    const users = await User.findAll();
+    const users = await User.findAll({
+      attributes: {
+        exclude: ["password"],
+      },
+    });
     res.status(200).json({
       success: true,
       data: users,
@@ -169,5 +174,4 @@ const getAllUsers = async (req, res) => {
     });
   }
 };
-
 module.exports = { getUser, editUser, deleteUser, getAllUsers };
